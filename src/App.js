@@ -1,13 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { ListNews } from "./layouts/listNews/ListNews";
 import { OpenNews } from "./layouts/openNews/OpenNews";
-// import Button from "./components/Button/Button";
+import { fetchNews } from "./API";
+import { getNews } from "./state/actionsCreator/action";
 
-// import logo from "./logo.svg";
 import "./App.css";
 
 function App() {
+  const dispatch = useDispatch();
+  let [newsList, setNewsList] = useState([]);
+
+  useEffect(() => {
+    fetchNews(setNewsList);
+  }, []);
+
+  useEffect(() => {
+    dispatch(getNews(newsList));
+  }, [newsList]);
+
   return (
     <Router>
       <Switch>

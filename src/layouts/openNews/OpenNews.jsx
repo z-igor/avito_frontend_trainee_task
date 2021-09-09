@@ -1,8 +1,16 @@
-import React from "react";
-import { Col, Container, ListGroup, Row } from "react-bootstrap";
+import React, { useState } from "react";
+import { Col, Container, Row } from "react-bootstrap";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 
-export function OpenNews() {
+export function OpenNews(props) {
+  const news = useSelector((s) => s.news.newsList);
+  const urlParams = useParams();
+  const [thatNews] = news.filter((n) => n.id == urlParams.id);
+
+  console.log(thatNews)
+
   return (
     <Container fluid>
       <Row>
@@ -13,8 +21,12 @@ export function OpenNews() {
         </Col>
       </Row>
       <Row>
-        <Col>Cras justo odio</Col>
+        <Col>{thatNews.url}</Col>
+        <Col>{thatNews.title}</Col>
+        <Col>{thatNews.time}</Col>
+        <Col>{thatNews.descendants}</Col>
       </Row>
+      <div>Комменты</div>
     </Container>
   );
 }
