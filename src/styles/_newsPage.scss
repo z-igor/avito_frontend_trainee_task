@@ -1,0 +1,28 @@
+.n-underline {
+  text-decoration: none;
+}
+
+.story {
+  &-title {
+    font-size: 2em;
+  }
+
+  &-details {
+    display: inline-flex;
+    margin-right: 4px;
+    justify-content: space-between;
+    align-items: stretch;
+    border: 1px solid lightgray;
+    border-radius: 4px;
+    height: 24px;
+
+    span {
+      padding: 0 6px;
+      line-height: 1;
+    }
+
+    &__div {
+      background-color: lightgray;
+    }
+  }
+}

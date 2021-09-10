@@ -5,7 +5,7 @@ import "./index.css";
 import App from "./App";
 import store from "./state/store";
 // import reportWebVitals from './reportWebVitals';
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/index.scss';
 
 window.storee = store;

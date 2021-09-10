@@ -3,8 +3,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
-
-// import "./style.scss";
+import { House } from "react-bootstrap-icons";
 
 export function OpenNews(props) {
   const news = useSelector((s) => s.news.newsList);
@@ -19,34 +18,55 @@ export function OpenNews(props) {
   }, [news]);
 
   return (
-    <Container fluid>
+    <Container className="mt-4">
       <Row>
-        <Col>
+        <Col sm={1} className="text-center">
           <Link to="/">
-            <p>Home</p>
+            <House color="black" size={24} />
           </Link>
         </Col>
+        {gettedNews[0] && (
+          <Col className="bg-light p-4">
+            <Row>
+              <Col className="">
+                <a
+                  href={oneNews.url}
+                  className="text-black-50 text-secondary"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {oneNews.url}
+                </a>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <p className="story-title">{oneNews.title}</p>
+              </Col>
+            </Row>
+            <Row className="text-secondary" xs="auto">
+              <Col>
+                <p>
+                  от: <i>{oneNews.by}</i>
+                </p>
+              </Col>
+              <Col>
+                <p>
+                  рейтинг: <i>{oneNews.descendants}</i>{" "}
+                </p>
+              </Col>
+              <Col>
+                <p>
+                  дата: <i>{new Date(+oneNews.time * 1000).toLocaleDateString()}</i>
+                </p>
+              </Col>
+            </Row>
+            <Row>
+              <div>Комменты</div>
+            </Row>
+          </Col>
+        )}
       </Row>
-      {gettedNews[0] && (
-        <>
-          <Row>
-            <Col className="test">
-              <a href={oneNews.url} target="_blank" rel="noreferrer">
-                {oneNews.url}
-              </a>
-            </Col>
-          </Row>
-          <Row>
-            <Col>{oneNews.title}</Col>
-          </Row>
-          <Row>
-            <Col>{oneNews.by}</Col>
-            <Col>{oneNews.descendants}</Col>
-            <Col>{Date(oneNews.time)}</Col>
-          </Row>
-        </>
-      )}
-      <div>Комменты</div>
     </Container>
   );
 }

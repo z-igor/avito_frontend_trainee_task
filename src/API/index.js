@@ -23,9 +23,11 @@ export async function fetchNews(setData) {
         axios.get(`https://hacker-news.firebaseio.com/v0/item/${n}.json`)
       );
 
-    const news = await Promise.all(newsPromises);
+    // const news = await Promise.all(newsPromises);
+    Promise.all(newsPromises).then(val => {
+      setData(val.map((a) => a.data));
+    });
 
-    setData(news.map((a) => a.data));
   } catch (err) {
     console.error(err);
   }
