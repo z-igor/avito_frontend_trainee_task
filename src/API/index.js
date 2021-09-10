@@ -1,5 +1,5 @@
-import { NEWSCOUNT } from "../consts";
 import axios from "axios";
+import { NEWSCOUNT } from "../consts";
 
 export async function getMaxItemId() {
   try {
