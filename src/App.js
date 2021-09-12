@@ -1,34 +1,61 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ListNews } from "./layouts/listNews/ListNews";
 import { OpenNews } from "./layouts/openNews/OpenNews";
 import { fetchNews } from "./API";
-import { getNews } from "./state/actionsCreator/action";
+import { getNews, setNewsSeconds } from "./state/actionsCreator/action";
 import { SECONDS } from "./consts";
 
 import "./App.css";
 
 function App() {
   const dispatch = useDispatch();
+  const { S, sReset } = useSelector((s) => s.news.newsSeconds);
   const [newsList, setNewsList] = useState([]);
-  const [timer, setTimer] = useState(SECONDS);
+  const [timerSeconds, setTimerSeconds] = useState(S);
+  let interval;
+
+  const countDown = () => {
+    interval = setInterval(() => {
+      setTimerSeconds((prev) => {
+        prev = prev !== 1 ? prev - 1 : SECONDS;
+        return prev;
+      });
+    }, 1000);
+  };
 
   useEffect(() => {
     fetchNews(setNewsList);
-  }, []);
-
-  /* useEffect(() => {
-    const startInterval = setInterval(() => {
-      setTimer(timer - 1);
-    }, 3);
-
-    console.log(timer);
+    countDown();
 
     return () => {
-      clearInterval(startInterval);
+      clearInterval(interval);
     };
-  }, [timer]); */
+  }, []);
+
+  useEffect(() => {
+    dispatch(setNewsSeconds(timerSeconds));
+
+    if (sReset === true) {
+      fetchNews(setNewsList);
+
+      dispatch(getNews(newsList));
+      dispatch(setNewsSeconds(S));
+      setTimerSeconds(S);
+
+      clearInterval(interval);
+    }
+
+    if (S === 1) {
+      fetchNews(setNewsList);
+      dispatch(getNews(newsList));
+      // dispatch(setNewsSeconds(S));
+      // setTimerSeconds(S);
+
+      // clearInterval(interval);
+    }
+  }, [timerSeconds]);
 
   useEffect(() => {
     dispatch(getNews(newsList));
@@ -36,6 +63,7 @@ function App() {
 
   return (
     <Router>
+      <p className="d-none">Секунды: {S}</p>
       <Switch>
         <Route path="/news/:id">
           <OpenNews />

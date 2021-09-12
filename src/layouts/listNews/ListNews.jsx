@@ -1,14 +1,43 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-// import { fetchNews } from "../../API";
-// import { getNews } from "../../state/actionsCreator/action";
-import { Container, ListGroup } from "react-bootstrap";
-import { StarHalf, PersonFill, Calendar3 } from "react-bootstrap-icons";
+import { useDispatch } from "react-redux";
+import {
+  Container,
+  ListGroup,
+  Col,
+  Row,
+  Spinner,
+  Button,
+} from "react-bootstrap";
+import { ArrowClockwise } from "react-bootstrap-icons";
+
+import { StoryDetails } from "../../components/storyDetails/StoryDetails";
+import { resetNewsSeconds } from "../../state/actionsCreator/action";
 
 export function ListNews() {
+  const dispatch = useDispatch();
   const { newsList } = useSelector((s) => s.news);
   let [news, setNews] = useState([]);
+  let [disabled, setDisabled] = useState(false);
+
+  const onUpdateNewsClick = (e) => {
+    dispatch(resetNewsSeconds());
+
+    setDisabled(true);
+
+    setTimeout(() => {
+      setDisabled(false);
+    }, 6000);
+  };
+
+  // const onToggleDisableClick = (e) => {
+  //   if (sReset) {
+  //     setTimeout(() => {
+  //       return true;
+  //     }, 2000);
+  //   }
+  // };
 
   useEffect(() => {
     setNews(newsList);
@@ -16,43 +45,49 @@ export function ListNews() {
 
   return (
     <Container fluid className="my-4">
-      <ListGroup variant="flush">
-        {news.map((n, i) => {
-          return (
-            <Link
-              to={`/news/${n.id}`}
-              key={n.id}
-              className="text-secondary n-underline"
-            >
-              <ListGroup.Item variant="light" action>
-                {i + 1}
-                {"  "}
-                <span>{n.title} </span>
-                <div className="story-details">
-                  <span className="story-details__div">
-                    <StarHalf size={18} />
-                  </span>
-                  <span className="">{n.descendants}</span>
-                </div>
-                <div className="story-details">
-                  <span className="story-details__div">
-                    <PersonFill size={18} />
-                  </span>
-                  <span className="">{n.by}</span>
-                </div>
-                <div className="story-details">
-                  <span className="story-details__div">
-                    <Calendar3 size={18} />
-                  </span>
-                  <span className="">
-                    {new Date(+n.time * 1000).toLocaleString()}
-                  </span>
-                </div>
-              </ListGroup.Item>
-            </Link>
-          );
-        })}
-      </ListGroup>
+      <Row>
+        <Col sm={1} className="text-center">
+          <Button
+            variant="light"
+            onClick={onUpdateNewsClick}
+            disabled={disabled}
+          >
+            <ArrowClockwise color="black" size={24} />
+          </Button>
+        </Col>
+        <Col>
+          <ListGroup variant="flush">
+            {!newsList[0] ? (
+              <div className="text-center">
+                <Spinner animation="grow" role="status" size="sm" />{" "}
+                <Spinner animation="grow" role="status" size="sm" />{" "}
+                <Spinner animation="grow" role="status" size="sm" />
+              </div>
+            ) : (
+              news.map((n, i) => {
+                return (
+                  <Link
+                    to={`/news/${n.id}`}
+                    key={n.id}
+                    className="text-secondary n-underline"
+                  >
+                    <ListGroup.Item variant="light" action>
+                      {i + 1}){"  "}
+                      <span>{n.title} </span>
+                      <StoryDetails c="StarHalf" data={n.descendants} />
+                      <StoryDetails c="PersonFill" data={n.by} />
+                      <StoryDetails
+                        c="Calendar3"
+                        data={new Date(+n.time * 1000).toLocaleString()}
+                      />
+                    </ListGroup.Item>
+                  </Link>
+                );
+              })
+            )}
+          </ListGroup>
+        </Col>
+      </Row>
     </Container>
   );
 }

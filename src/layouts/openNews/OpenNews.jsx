@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Container, Row, Spinner, Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
@@ -7,25 +7,34 @@ import { House } from "react-bootstrap-icons";
 
 export function OpenNews(props) {
   const news = useSelector((s) => s.news.newsList);
+  const seconds = useSelector((s) => s.news.newsSeconds);
   const urlParams = useParams();
+  const [loader, setLoaded] = useState(true);
   const [gettedNews, setGettedNews] = useState([]);
 
-  // const [oneNews, setOneNews] = useState([]);
-  const oneNews = gettedNews.find((n) => n.id == urlParams.id);
+  const oneNews = gettedNews.find((n) => n.id === +urlParams.id);
 
   useEffect(() => {
     setGettedNews(news);
   }, [news]);
 
   return (
-    <Container className="mt-4">
+    <Container fluid className="my-4">
       <Row>
         <Col sm={1} className="text-center">
           <Link to="/">
-            <House color="black" size={24} />
+            <Button variant="light">
+              <House color="black" size={24} />
+            </Button>
           </Link>
         </Col>
-        {gettedNews[0] && (
+        {!oneNews ? (
+          <div className="text-center">
+            <Spinner animation="grow" role="status" size="sm" />{" "}
+            <Spinner animation="grow" role="status" size="sm" />{" "}
+            <Spinner animation="grow" role="status" size="sm" />
+          </div>
+        ) : (
           <Col className="bg-light p-4">
             <Row>
               <Col className="">
@@ -57,7 +66,8 @@ export function OpenNews(props) {
               </Col>
               <Col>
                 <p>
-                  дата: <i>{new Date(+oneNews.time * 1000).toLocaleDateString()}</i>
+                  дата:{" "}
+                  <i>{new Date(+oneNews.time * 1000).toLocaleDateString()}</i>
                 </p>
               </Col>
             </Row>
