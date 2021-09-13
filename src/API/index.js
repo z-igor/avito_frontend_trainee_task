@@ -45,3 +45,13 @@ export async function getComments(kids, setData) {
     console.error("ERROR:", err);
   }
 }
+
+export function fetchStory(id, setData) {
+  Axios.get(`item/${id}.json`)
+    .then((res) => {
+      setData(res.data);
+    })
+    .catch((err) => {
+      console.error("Error:", err);
+    });
+}

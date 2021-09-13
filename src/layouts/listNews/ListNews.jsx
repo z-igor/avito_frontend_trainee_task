@@ -71,9 +71,9 @@ export function ListNews() {
                     to={`/news/${n.id}`}
                     key={n.id}
                     className="text-secondary n-underline"
-                    tabindex="-1"
+                    tabIndex="-1"
                   >
-                    <ListGroup.Item variant="light" action tabindex="0">
+                    <ListGroup.Item variant="light" action tabIndex="0">
                       {i + 1}){"  "}
                       <strong>({n.kids && n.kids.length})</strong>
                       <span >{n.title} </span>

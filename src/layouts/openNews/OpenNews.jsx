@@ -5,7 +5,7 @@ import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { House } from "react-bootstrap-icons";
 
-import { getComments } from "../../API";
+import { getComments, fetchStory } from "../../API";
 
 export function OpenNews(props) {
   const news = useSelector((s) => s.news.newsList);
@@ -15,31 +15,27 @@ export function OpenNews(props) {
   const [oneNews, setOneNews] = useState({});
 
   useEffect(() => {
-    setOneNews(news.find((n) => n.id === +urlParams.id));
+    if (news !== undefined) {
+      let one = news.find((n) => n.id === +urlParams.id);
+
+      if (one !== undefined) {
+        setOneNews(news.find((n) => n.id === +urlParams.id));
+      } else {
+        fetchStory(+urlParams.id, setOneNews);
+      }
+    }
   }, [news]);
 
   useEffect(() => {
     if (oneNews !== undefined && oneNews.kids !== undefined) {
-      // oneNews.kids.forEach((kid) => {
-      //   Axios.get(`item/${oneNews.kids}.json`)
-      //     .then((res) => {
-      //       setComments((prev) => {
-      //         prev.push(res.data);
-      //         return prev;
-      //       });
-      //     })
-      //     .catch((err) => {
-      //       console.log(err);
-      //     });
-      // });
-
-      // console.log(getComments(oneNews.kids));
       getComments(oneNews.kids, setComments);
+
+      console.log(comments);
     }
   }, [oneNews]);
 
   return (
-    <Container fluid className="my-4">
+    <Container fluid className="my-4" keys={+urlParams.id}>
       <Row>
         <Col sm={1} className="text-center">
           <Link to="/">
@@ -91,9 +87,7 @@ export function OpenNews(props) {
               </Col>
             </Row>
             <Row>
-              {comments[0] !== undefined && (
-                <p>Комментарии {comments.length}</p>
-              )}
+              <p>Комментарии {comments.length}</p>
             </Row>
             <Row>
               <div>
@@ -101,8 +95,15 @@ export function OpenNews(props) {
                   comments.map((c, i) => (
                     <section keys={c.id}>
                       <div>
-                        <i>{c.by}</i>
+                        <i className="text-secondary">
+                          {c.by} {new Date(c.time).toLocaleTimeString()}
+                        </i>
                         <p dangerouslySetInnerHTML={{ __html: c.text }} />
+                        {c.kids && (
+                          <p className="text-secondary">
+                            Ответов {c.kids.length}
+                          </p>
+                        )}
                       </div>
                     </section>
                   ))}
