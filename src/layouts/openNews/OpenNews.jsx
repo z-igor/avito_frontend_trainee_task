@@ -5,18 +5,38 @@ import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { House } from "react-bootstrap-icons";
 
+import { getComments } from "../../API";
+
 export function OpenNews(props) {
   const news = useSelector((s) => s.news.newsList);
-  const seconds = useSelector((s) => s.news.newsSeconds);
+  // const seconds = useSelector((s) => s.news.newsSeconds);
   const urlParams = useParams();
-  const [loader, setLoaded] = useState(true);
-  const [gettedNews, setGettedNews] = useState([]);
-
-  const oneNews = gettedNews.find((n) => n.id === +urlParams.id);
+  const [comments, setComments] = useState([]);
+  const [oneNews, setOneNews] = useState({});
 
   useEffect(() => {
-    setGettedNews(news);
+    setOneNews(news.find((n) => n.id === +urlParams.id));
   }, [news]);
+
+  useEffect(() => {
+    if (oneNews !== undefined && oneNews.kids !== undefined) {
+      // oneNews.kids.forEach((kid) => {
+      //   Axios.get(`item/${oneNews.kids}.json`)
+      //     .then((res) => {
+      //       setComments((prev) => {
+      //         prev.push(res.data);
+      //         return prev;
+      //       });
+      //     })
+      //     .catch((err) => {
+      //       console.log(err);
+      //     });
+      // });
+
+      // console.log(getComments(oneNews.kids));
+      getComments(oneNews.kids, setComments);
+    }
+  }, [oneNews]);
 
   return (
     <Container fluid className="my-4">
@@ -35,7 +55,7 @@ export function OpenNews(props) {
             <Spinner animation="grow" role="status" size="sm" />
           </div>
         ) : (
-          <Col className="bg-light p-4">
+          <Col sm="auto" className="bg-light p-4">
             <Row>
               <Col className="">
                 <a
@@ -61,18 +81,32 @@ export function OpenNews(props) {
               </Col>
               <Col>
                 <p>
-                  рейтинг: <i>{oneNews.descendants}</i>{" "}
+                  рейтинг: <i>{oneNews.score}</i>{" "}
                 </p>
               </Col>
               <Col>
                 <p>
-                  дата:{" "}
-                  <i>{new Date(+oneNews.time * 1000).toLocaleDateString()}</i>
+                  дата: <i>{new Date(+oneNews.time * 1000).toLocaleString()}</i>
                 </p>
               </Col>
             </Row>
             <Row>
-              <div>Комменты</div>
+              {comments[0] !== undefined && (
+                <p>Комментарии {comments.length}</p>
+              )}
+            </Row>
+            <Row>
+              <div>
+                {comments !== undefined &&
+                  comments.map((c, i) => (
+                    <section keys={c.id}>
+                      <div>
+                        <i>{c.by}</i>
+                        <p dangerouslySetInnerHTML={{ __html: c.text }} />
+                      </div>
+                    </section>
+                  ))}
+              </div>
             </Row>
           </Col>
         )}

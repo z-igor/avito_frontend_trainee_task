@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Container,
   ListGroup,
@@ -47,13 +46,15 @@ export function ListNews() {
     <Container fluid className="my-4">
       <Row>
         <Col sm={1} className="text-center">
-          <Button
-            variant="light"
-            onClick={onUpdateNewsClick}
-            disabled={disabled}
-          >
-            <ArrowClockwise color="black" size={24} />
-          </Button>
+          <div className="position-sticky">
+            <Button
+              variant="light"
+              onClick={onUpdateNewsClick}
+              disabled={disabled}
+            >
+              <ArrowClockwise color="black" size={24} />
+            </Button>
+          </div>
         </Col>
         <Col>
           <ListGroup variant="flush">
@@ -70,15 +71,17 @@ export function ListNews() {
                     to={`/news/${n.id}`}
                     key={n.id}
                     className="text-secondary n-underline"
+                    tabindex="-1"
                   >
-                    <ListGroup.Item variant="light" action>
+                    <ListGroup.Item variant="light" action tabindex="0">
                       {i + 1}){"  "}
-                      <span>{n.title} </span>
-                      <StoryDetails c="StarHalf" data={n.descendants} />
+                      <strong>({n.kids && n.kids.length})</strong>
+                      <span >{n.title} </span>
+                      <StoryDetails c="StarHalf" data={n.score} />
                       <StoryDetails c="PersonFill" data={n.by} />
                       <StoryDetails
                         c="Calendar3"
-                        data={new Date(+n.time * 1000).toLocaleString()}
+                        data={new Date(+n.time * 1000).toLocaleDateString()}
                       />
                     </ListGroup.Item>
                   </Link>

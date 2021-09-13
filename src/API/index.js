@@ -1,6 +1,11 @@
 import axios from "axios";
 import { NEWSCOUNT } from "../consts";
 
+export const Axios = axios.create({
+  baseURL: "https://hacker-news.firebaseio.com/v0/",
+  // timeout: 4000,
+});
+
 export async function getMaxItemId() {
   try {
     let r = await fetch("https://hacker-news.firebaseio.com/v0/maxitem.json");
@@ -13,22 +18,30 @@ export async function getMaxItemId() {
 
 export async function fetchNews(setData) {
   try {
-    const ids = await axios.get(
-      "https://hacker-news.firebaseio.com/v0/newstories.json"
-    );
+    const ids = await Axios.get("newstories.json");
 
     const newsPromises = ids.data
       .slice(0, NEWSCOUNT)
-      .map((n) =>
-        axios.get(`https://hacker-news.firebaseio.com/v0/item/${n}.json`)
-      );
+      .map((n) => Axios.get(`item/${n}.json`));
 
-    // const news = await Promise.all(newsPromises);
-    Promise.all(newsPromises).then(val => {
+    Promise.all(newsPromises).then((val) => {
       setData(val.map((a) => a.data));
     });
-
   } catch (err) {
     console.error(err);
+  }
+}
+
+export async function getComments(kids, setData) {
+  try {
+    const comments = kids.map((c, i) => {
+      return Axios.get(`item/${c}.json`);
+    });
+
+    Promise.all(comments).then((res) => {
+      setData(res.map((r) => r.data));
+    });
+  } catch (err) {
+    console.error("ERROR:", err);
   }
 }
