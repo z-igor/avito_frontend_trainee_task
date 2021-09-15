@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  Container,
-  ListGroup,
-  Col,
-  Row,
-  Spinner,
-  Button,
-} from "react-bootstrap";
+import { Container, ListGroup, Col, Row, Button } from "react-bootstrap";
 import { ArrowClockwise } from "react-bootstrap-icons";
 
 import { StoryDetails } from "../../components/storyDetails/StoryDetails";
 import { resetNewsSeconds } from "../../state/actionsCreator/action";
+import Loader from "../../components/loader/Loader";
 
 export function ListNews() {
   const dispatch = useDispatch();
@@ -29,14 +23,6 @@ export function ListNews() {
       setDisabled(false);
     }, 6000);
   };
-
-  // const onToggleDisableClick = (e) => {
-  //   if (sReset) {
-  //     setTimeout(() => {
-  //       return true;
-  //     }, 2000);
-  //   }
-  // };
 
   useEffect(() => {
     setNews(newsList);
@@ -58,14 +44,13 @@ export function ListNews() {
         </Col>
         <Col>
           <ListGroup variant="flush">
-            {!newsList[0] ? (
-              <div className="text-center">
-                <Spinner animation="grow" role="status" size="sm" />{" "}
-                <Spinner animation="grow" role="status" size="sm" />{" "}
-                <Spinner animation="grow" role="status" size="sm" />
-              </div>
+            {!news[0] ? (
+              <Loader />
             ) : (
               news.map((n, i) => {
+                if (!n) {
+                  return n;
+                }
                 return (
                   <Link
                     to={`/news/${n.id}`}
@@ -76,7 +61,7 @@ export function ListNews() {
                     <ListGroup.Item variant="light" action tabIndex="0">
                       {i + 1}){"  "}
                       <strong>({n.kids && n.kids.length})</strong>
-                      <span >{n.title} </span>
+                      <span>{n.title} </span>
                       <StoryDetails c="StarHalf" data={n.score} />
                       <StoryDetails c="PersonFill" data={n.by} />
                       <StoryDetails

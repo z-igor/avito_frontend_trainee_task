@@ -6,6 +6,9 @@ import { Link } from "react-router-dom";
 import { House } from "react-bootstrap-icons";
 
 import { getComments, fetchStory } from "../../API";
+import Loader from "../../components/loader/Loader";
+import { SubComments } from "../../components/subComments/SubComments";
+import { BtnShowComments } from "../../components/buttonShowComments/BtnShowComments";
 
 export function OpenNews(props) {
   const news = useSelector((s) => s.news.newsList);
@@ -13,6 +16,7 @@ export function OpenNews(props) {
   const urlParams = useParams();
   const [comments, setComments] = useState([]);
   const [oneNews, setOneNews] = useState({});
+  const [showComs, setShowComs] = useState(false);
 
   useEffect(() => {
     if (news !== undefined) {
@@ -29,15 +33,13 @@ export function OpenNews(props) {
   useEffect(() => {
     if (oneNews !== undefined && oneNews.kids !== undefined) {
       getComments(oneNews.kids, setComments);
-
-      console.log(comments);
     }
   }, [oneNews]);
 
   return (
     <Container fluid className="my-4" keys={+urlParams.id}>
       <Row>
-        <Col sm={1} className="text-center">
+        <Col xs="auto" sm="auto" className="text-center">
           <Link to="/">
             <Button variant="light">
               <House color="black" size={24} />
@@ -45,13 +47,9 @@ export function OpenNews(props) {
           </Link>
         </Col>
         {!oneNews ? (
-          <div className="text-center">
-            <Spinner animation="grow" role="status" size="sm" />{" "}
-            <Spinner animation="grow" role="status" size="sm" />{" "}
-            <Spinner animation="grow" role="status" size="sm" />
-          </div>
+          <Loader />
         ) : (
-          <Col sm="auto" className="bg-light p-4">
+          <Col xs={11} sm={11} className="bg-light p-4">
             <Row>
               <Col className="">
                 <a
@@ -87,26 +85,26 @@ export function OpenNews(props) {
               </Col>
             </Row>
             <Row>
-              <p>Комментарии {comments.length}</p>
+              <p>Комментарии {!oneNews.kids ? 0 : oneNews.kids.length}</p>
             </Row>
             <Row>
               <div>
-                {comments !== undefined &&
+                {comments[0] === undefined ? (
+                  <Loader />
+                ) : (
                   comments.map((c, i) => (
-                    <section keys={c.id}>
+                    <section keys={c}>
                       <div>
                         <i className="text-secondary">
                           {c.by} {new Date(c.time).toLocaleTimeString()}
                         </i>
                         <p dangerouslySetInnerHTML={{ __html: c.text }} />
-                        {c.kids && (
-                          <p className="text-secondary">
-                            Ответов {c.kids.length}
-                          </p>
-                        )}
+                        <BtnShowComments isShow={setShowComs} kidIDs={c.kids} />
+                        <SubComments isShow={showComs} commentsID={c.kids} />
                       </div>
                     </section>
-                  ))}
+                  ))
+                )}
               </div>
             </Row>
           </Col>

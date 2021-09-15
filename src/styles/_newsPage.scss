@@ -30,3 +30,20 @@
     }
   }
 }
+
+.comments {
+  &__btn-ans {
+    margin-bottom: 1em;
+  }
+}
+
+.subcomments {
+  padding-left: 1em;
+  border-left: 1px solid silver;
+  border-radius: 4px;
+  margin-bottom: 1em;
+
+  & > p {
+    margin-bottom: 0;
+  }
+}

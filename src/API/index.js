@@ -34,6 +34,7 @@ export async function fetchNews(setData) {
 
 export async function getComments(kids, setData) {
   try {
+    console.log(kids);
     const comments = kids.map((c, i) => {
       return Axios.get(`item/${c}.json`);
     });
