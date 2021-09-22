@@ -1,2 +1,2 @@
-export const NEWSCOUNT = 10;
+export const NEWSCOUNT = 50;
 export const SECONDS = 60;

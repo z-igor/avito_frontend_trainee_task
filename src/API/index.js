@@ -28,13 +28,12 @@ export async function fetchNews(setData) {
       setData(val.map((a) => a.data));
     });
   } catch (err) {
-    console.error(err);
+    console.error("API error:", err);
   }
 }
 
 export async function getComments(kids, setData) {
   try {
-    console.log(kids);
     const comments = kids.map((c, i) => {
       return Axios.get(`item/${c}.json`);
     });
@@ -43,7 +42,7 @@ export async function getComments(kids, setData) {
       setData(res.map((r) => r.data));
     });
   } catch (err) {
-    console.error("ERROR:", err);
+    console.error("API error:", err);
   }
 }
 
@@ -53,6 +52,6 @@ export function fetchStory(id, setData) {
       setData(res.data);
     })
     .catch((err) => {
-      console.error("Error:", err);
+      console.error("API error:", err);
     });
 }

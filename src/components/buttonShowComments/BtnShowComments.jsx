@@ -1,20 +1,18 @@
 import React from "react";
 
-export function BtnShowComments({ isShow, kidIDs, ...props }) {
-  // const [showComs, setShowComs] = useState(false);
-
+export function BtnShowComments({ setShow, kidsID, ...props }) {
   const onLoadSubCommentsClick = (e) => {
-    isShow((prev) => !prev);
+    setShow((prev) => !prev);
   };
 
   return (
-    kidIDs !== undefined &&
-    kidIDs.length !== 0 && (
+    kidsID !== undefined &&
+    kidsID.length !== 0 && (
       <button
         className="btn btn-outline-secondary comments__btn-ans"
         onClick={onLoadSubCommentsClick}
       >
-        Ответов {kidIDs.length}
+        Ответов {kidsID.length}
       </button>
     )
   );

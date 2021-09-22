@@ -7,8 +7,7 @@ import { House } from "react-bootstrap-icons";
 
 import { getComments, fetchStory } from "../../API";
 import Loader from "../../components/loader/Loader";
-import { SubComments } from "../../components/subComments/SubComments";
-import { BtnShowComments } from "../../components/buttonShowComments/BtnShowComments";
+import { Comments } from "../../components/Comments/Comments";
 
 export function OpenNews(props) {
   const news = useSelector((s) => s.news.newsList);
@@ -16,7 +15,6 @@ export function OpenNews(props) {
   const urlParams = useParams();
   const [comments, setComments] = useState([]);
   const [oneNews, setOneNews] = useState({});
-  const [showComs, setShowComs] = useState(false);
 
   useEffect(() => {
     if (news !== undefined) {
@@ -37,7 +35,7 @@ export function OpenNews(props) {
   }, [oneNews]);
 
   return (
-    <Container fluid className="my-4" keys={+urlParams.id}>
+    <Container fluid className="my-4">
       <Row>
         <Col xs="auto" sm="auto" className="text-center">
           <Link to="/">
@@ -89,21 +87,10 @@ export function OpenNews(props) {
             </Row>
             <Row>
               <div>
-                {comments[0] === undefined ? (
+                {oneNews.kids !== undefined && comments[0] === undefined ? (
                   <Loader />
                 ) : (
-                  comments.map((c, i) => (
-                    <section keys={c}>
-                      <div>
-                        <i className="text-secondary">
-                          {c.by} {new Date(c.time).toLocaleTimeString()}
-                        </i>
-                        <p dangerouslySetInnerHTML={{ __html: c.text }} />
-                        <BtnShowComments isShow={setShowComs} kidIDs={c.kids} />
-                        <SubComments isShow={showComs} commentsID={c.kids} />
-                      </div>
-                    </section>
-                  ))
+                  comments.map((c, i) => <Comments comment={c} keys={c.id} />)
                 )}
               </div>
             </Row>

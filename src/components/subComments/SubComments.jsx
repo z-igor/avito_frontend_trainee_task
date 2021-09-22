@@ -1,47 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { getComments } from "../../API";
-// import Loader from "../../components/loader/Loader";
+import { BtnShowComments } from "../buttonShowComments/BtnShowComments";
 
-export function SubComments({ isShow, commentsID, ...props }) {
-  // const [comments, setComments] = useState([]);
+export function SubComments({ comment, ...props }) {
   const [gettedComs, setGetComs] = useState([]);
-  const [showComs, setShowComs] = useState(false);
+  const [isShow, setShow] = useState(false);
 
-  const onLoadCommentsClick = (e) => {
-    setShowComs((prev) => !prev);
-  };
+  // const onLoadCommentsClick = (e) => {
+  //   setShowSubComs((prev) => !prev);
+  // };
 
   useEffect(() => {
     if (isShow) {
-      getComments(commentsID, setGetComs);
+      getComments(comment.kids, setGetComs);
     }
-  }, [commentsID, isShow]);
+  }, [isShow, comment.kids]);
 
   return (
-    <div>
-      <div className="comments">
-        {isShow &&
-          gettedComs.map((c, i) => {
-            return (
-              <div keys={c.id} className="subcomments">
-                <span className="text-secondary">
-                  {c.by} {c.deleted && "(удален)"}
-                </span>
-                <p dangerouslySetInnerHTML={{ __html: c.text }} />
-                {c.kids !== undefined && c.kids.length !== 0 && (
-                  <button
-                    className="btn btn-outline-secondary comments__btn-ans"
-                    onClick={onLoadCommentsClick}
-                  >
-                    Ответов {c.kids.length}
-                  </button>
-                )}
-                <SubComments isShow={showComs} commentsID={c.kids} />
-              </div>
-            );
-          })}
-      </div>
-      {/* )} */}
+    <div className="subcomments">
+      <span className="text-secondary">
+        {comment.by} {comment.deleted && "(удален)"}
+      </span>
+      <p dangerouslySetInnerHTML={{ __html: comment.text }} />
+      <BtnShowComments setShow={setShow} kidsID={comment.kids} />
+      {gettedComs !== undefined &&
+        gettedComs.length !== 0 &&
+        gettedComs.map((c, i) => <SubComments comment={c} keys={c.id} />)}
     </div>
   );
 }
